@@ -5,9 +5,21 @@ import HomeScreen from '../screens/HomeScreen';
 import MenuScreen from '../screens/MenuScreen';
 import CartScreen from '../screens/CartScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
+import OrderHistoryScreen from '../screens/OrderHistoryScreen';
 import { CartContext, CartProvider } from '../components/CartContext';
+import { createStackNavigator } from '@react-navigation/stack';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+const ProfileStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+    <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} />
+  </Stack.Navigator>
+);
 
 const MainTabNavigator = () => {
   const { cartItems } = useContext(CartContext);
@@ -48,7 +60,7 @@ const MainTabNavigator = () => {
           tabBarBadge: cartItems.length > 0 ? cartItems.length : null,
         }}
       />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>
   );
 };
