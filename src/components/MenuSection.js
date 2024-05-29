@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity,FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 
 const MenuItem = ({ item, onPress }) => {
   return (
@@ -59,13 +59,16 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   addButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#4CAF50',
+    width:100,
     paddingHorizontal: 10,
+    margin:2,
     paddingVertical: 5,
     borderRadius: 5,
   },
   addButtonText: {
     color: '#fff',
+    textAlign:"center",
     fontWeight: 'bold',
   },
 });

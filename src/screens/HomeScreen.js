@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import FoodCarousel from '../components/FoodCarousel';
 import CategorySection from '../components/CategorySection';
 import MenuSection from '../components/MenuSection';
+import {CartContext }from '../contexts/CartContext'
 
 const foodData = [
   { id: '1', name: 'Pizza', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Pizza-3007395.jpg/1920px-Pizza-3007395.jpg' },
@@ -34,6 +35,7 @@ const menuData = [
 ];
 
 const HomeScreen = ({ navigation }) => {
+  const{addToCart}=useContext(CartContext)
   // Handler for category selection
   const handleSelectCategory = (category) => {
     // Implement logic for handling category selection here
@@ -46,7 +48,7 @@ const HomeScreen = ({ navigation }) => {
       <Text style={styles.title}>Welcome to the Food Ordering App!</Text>
       <FoodCarousel data={foodData} />
       <CategorySection categories={categoryData} onSelect={handleSelectCategory} />
-      <MenuSection menuData={menuData} />
+      <MenuSection menuData={menuData} onAddToCart={addToCart} />
      
       </View>
     </ScrollView>

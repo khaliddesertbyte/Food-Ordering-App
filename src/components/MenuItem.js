@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { CartContext } from '../components/CartContext';
+import { CartContext } from '../contexts/CartContext';
 
 const MenuItem = ({ item }) => {
   const { addToCart } = useContext(CartContext);
@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
   addToCartButton: {
     backgroundColor: '#4CAF50',
     padding: 5,
+    margin:2,
     borderRadius: 5,
     alignItems: 'center',
   },

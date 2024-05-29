@@ -4,6 +4,7 @@ export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   const addToCart = (item) => {
     setCartItems((prevItems) => {
@@ -32,8 +33,28 @@ export const CartProvider = ({ children }) => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
+  const addOrder = (orderItems) => {
+    setOrders((prevOrders) => [
+      ...prevOrders,
+      {
+        // id: generateOrderId(), // Assuming you have a function to generate a unique order id
+        items: orderItems.map(item => ({
+          id: item.id,
+          image: item.image,
+          name: item.name,
+          price: item.price,
+        })),
+      }
+    ]);
+    clearCart();
+  };
+
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, updateCartQuantity, getTotalPrice }}>
+    <CartContext.Provider value={{ cartItems, addToCart, updateCartQuantity, getTotalPrice, addOrder, clearCart, orders }}>
       {children}
     </CartContext.Provider>
   );
