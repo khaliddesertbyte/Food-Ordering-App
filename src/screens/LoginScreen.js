@@ -1,18 +1,48 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useContext, useRef } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { AuthContext } from '../contexts/AuthContext';
+import { auth, signInWithPhoneNumber, PhoneAuthProvider, firebaseConfig,signInWithCredential } from '../../firebase';
+import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { login } = useContext(AuthContext);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [code, setCode] = useState('');
+  const [verificationId, setVerificationId] = useState('');
+  const recaptchaVerifier = useRef(null);
 
-  const handleLogin = () => {
-    // Handle login logic here
-    // If successful, navigate to the main app
-    navigation.navigate('Main');
+  const sendVerificationCode = async () => {
+    try {
+      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier.current);
+      setVerificationId(confirmationResult.verificationId);
+      setPhoneNumber('');
+      setIsVerifying(true);
+    } catch (error) {
+      console.error('Error sending verification code:', error);
+    }
   };
 
-  const navigateToSignup = () => {
-    navigation.navigate('Signup');
+  const confirmCode = async () => {
+    try {
+      const credential = PhoneAuthProvider.credential(verificationId, code);
+      await signInWithCredential(auth, credential,navigation);
+      setCode('');
+      console.log("Login successfully");
+      navigation.navigate('Main'); // Navigate to the main screen after successful login
+    } catch (error) {
+      console.error('Error confirming code:', error);
+    }
+  };
+
+  const handleLogin = async () => {
+    try {
+      await login(email, password);
+    } catch (error) {
+      console.error('Error signing in:', error);
+    }
   };
 
   return (
@@ -23,7 +53,6 @@ const LoginScreen = ({ navigation }) => {
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
-        keyboardType="email-address"
       />
       <TextInput
         style={styles.input}
@@ -32,12 +61,45 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={navigateToSignup}>
-        <Text style={styles.signupText}>Don't have an account? Sign up</Text>
-      </TouchableOpacity>
+      <Button title="Login" onPress={handleLogin} />
+      <Button
+        title="Go to Signup"
+        onPress={() => navigation.navigate('Signup')}
+      />
+      <Button title="Sign in with Google" />
+      <View style={styles.container}>
+        <FirebaseRecaptchaVerifierModal
+          ref={recaptchaVerifier}
+          firebaseConfig={firebaseConfig}
+        />
+        <Text style={styles.otpText}>Login Using OTP</Text>
+        <TextInput
+          placeholder='Phone number with country code'
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType='phone-pad'
+          autoCompleteType='tel'
+          style={styles.textInput}
+          editable={!isVerifying}
+        />
+        <TouchableOpacity style={styles.sendVerification} onPress={sendVerificationCode} disabled={isVerifying}>
+          <Text style={styles.buttonText}>Send Verification</Text>
+        </TouchableOpacity>
+        {isVerifying && (
+          <>
+            <TextInput
+              placeholder='Confirm code'
+              value={code}
+              onChangeText={setCode}
+              keyboardType='number-pad'
+              style={styles.textInput}
+            />
+            <TouchableOpacity style={styles.sendCode} onPress={confirmCode}>
+              <Text style={styles.buttonText}>Confirm Verification</Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
     </View>
   );
 };
@@ -46,38 +108,52 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
+    alignItems: 'center',
+    padding: 16,
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
-    textAlign: 'center',
   },
   input: {
-    height: 40,
-    borderColor: '#ccc',
+    width: '100%',
+    padding: 10,
     borderWidth: 1,
-    marginBottom: 20,
-    paddingHorizontal: 10,
+    borderColor: '#ccc',
+    marginBottom: 10,
     borderRadius: 5,
   },
-  button: {
-    backgroundColor: '#4CAF50',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 10,
+  textInput: {
+    paddingTop: 40,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    fontSize: 24,
+    borderBottomColor: "#fff",
+    borderBottomWidth: 2,
+    marginBottom: 20,
+    color: "#fff"
+  },
+  sendVerification: {
+    padding: 20,
+    backgroundColor: "#3498db",
+    borderRadius: 10
+  },
+  sendCode: {
+    padding: 20,
+    backgroundColor: "#9b59b6",
+    borderRadius: 10,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
+    textAlign: "center",
+    color: "#fff",
+    fontWeight: "bold"
   },
-  signupText: {
-    color: '#4CAF50',
-    textAlign: 'center',
-    marginTop: 10,
-  },
+  otpText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
+    margin: 20
+  }
 });
 
 export default LoginScreen;

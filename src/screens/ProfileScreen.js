@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { AuthContext } from '../contexts/AuthContext';
 
 const ProfileScreen = ({ navigation }) => {
+  const { user, logout } = useContext(AuthContext);
+
   const handleEditProfile = () => {
     navigation.navigate('EditProfile');
   };
@@ -11,14 +14,14 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const handleLogout = () => {
-    // Handle logout logic here
+    logout();
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.userInfo}>
-        <Text style={styles.userName}>John Doe</Text>
-        <Text style={styles.userEmail}>johndoe@example.com</Text>
+        <Text style={styles.userName}>{user.displayName}</Text>
+        <Text style={styles.userEmail}>{user.email}</Text>
       </View>
       <View style={styles.actions}>
         <TouchableOpacity style={styles.actionButton} onPress={handleEditProfile}>

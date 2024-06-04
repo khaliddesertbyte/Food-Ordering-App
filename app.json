@@ -9,19 +9,31 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "googleSignIn": {
+        "androidClientId": "{377870222431-ugmfsuogras74saaodlphpflsma5mstl.apps.googleusercontent.com}",
+        "iosClientId": "{377870222431-67mn67poka9nj5dn0hp0tionbd86mtvb.apps.googleusercontent.com}" 
+      }
     },
+  "plugins": ["@react-native-google-signin/google-signin"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier":"com.desertbyte.firebasesignin"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.desertbyte.firebasesignin"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "523c16db-2c0a-49f2-9dbf-cb50701d319e"
+      }
     }
   }
 }

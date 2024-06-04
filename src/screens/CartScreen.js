@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity,TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { CartContext } from '../contexts/CartContext';
 
 const CartScreen = () => {
-  const { cartItems, updateCartQuantity, getTotalPrice } = useContext(CartContext);
+  const { cartItems, updateCartQuantity, getTotalPrice,removeItemFromCart } = useContext(CartContext);
   const navigation = useNavigation();
 
   const handleIncrement = (item) => {
@@ -20,6 +20,9 @@ const CartScreen = () => {
   const handleCheckout = () => {
     navigation.navigate('CheckoutPage');
   };
+  const handleDelete = (itemId) => {
+    removeItemFromCart(itemId);
+  }; 
 
   return (
     <View style={styles.container}>
@@ -41,6 +44,14 @@ const CartScreen = () => {
                   <Text style={styles.quantityButtonText}>+</Text>
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity onPress={() => handleDelete(item.id)} style={styles.deleteButton}>
+                <Text style={styles.deleteButtonText}>X</Text>
+              </TouchableOpacity>
+              <TextInput
+                placeholder="Add comment"
+                style={[styles.commentInput, { width: '100%' }]}
+                onChangeText={(text) => {/* Handle comment change */}}
+              />
             </View>
           </View>
         )}
@@ -108,6 +119,27 @@ const styles = StyleSheet.create({
   cartItemQuantityText: {
     fontSize: 16,
     marginHorizontal: 5,
+  },
+  deleteButton: {
+    backgroundColor: '#FF5733',
+    borderRadius: 5,
+    padding: 5,
+    marginHorizontal: 5,
+    marginTop: 5,
+    position: 'absolute',
+    top: 5,
+    right: 5,
+  },
+  deleteButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  commentInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 5,
   },
   totalContainer: {
     padding: 10,

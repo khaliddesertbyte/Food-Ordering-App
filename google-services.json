@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "377870222431",
+    "project_id": "foodordering-14fc8",
+    "storage_bucket": "foodordering-14fc8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:377870222431:android:7be365dd04c123a147c7ea",
+        "android_client_info": {
+          "package_name": "com.desertbyte.firebasesignin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "377870222431-ugmfsuogras74saaodlphpflsma5mstl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.desertbyte.firebasesignin",
+            "certificate_hash": "98ce1fd2f2b5c9f04f83d2f25e8945e09a571fb5"
+          }
+        },
+        {
+          "client_id": "377870222431-6u4u969m4occ4m6k6hnfed2o5rdi6c3l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh4wy4f8Fm_2f75hh3BbiP7Eluy1AGEeM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "377870222431-6u4u969m4occ4m6k6hnfed2o5rdi6c3l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "377870222431-67mn67poka9nj5dn0hp0tionbd86mtvb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.desertbyte.firebasesignin"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>377870222431-67mn67poka9nj5dn0hp0tionbd86mtvb.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.377870222431-67mn67poka9nj5dn0hp0tionbd86mtvb</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCuAVNEvba9itLQIfjtG1U2_NPA9lLQwgo</string>
+	<key>GCM_SENDER_ID</key>
+	<string>377870222431</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.desertbyte.firebasesignin</string>
+	<key>PROJECT_ID</key>
+	<string>foodordering-14fc8</string>
+	<key>STORAGE_BUCKET</key>
+	<string>foodordering-14fc8.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:377870222431:ios:c034c2acc1c9dc0e47c7ea</string>
+</dict>
+</plist>

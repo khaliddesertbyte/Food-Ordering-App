@@ -2,28 +2,20 @@ import React, { useContext, useState } from 'react';
 import { View, Text, Button, TextInput, StyleSheet, FlatList, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { CartContext } from '../contexts/CartContext';
-import { OrderContext } from '../contexts/OrderContext';
 
 const CheckoutPage = () => {
-  const { orders } = useContext(OrderContext);
-  const { cartItems, getTotalPrice, addOrder, clearCart } = useContext(CartContext);
+  const { cartItems, confirmOrder } = useContext(CartContext); // Use confirmOrder from CartContext
   const navigation = useNavigation();
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
 
-  // Function to find the quantity of each item in the cart
-  const findCartItemQuantity = (itemId) => {
-    const cartItem = cartItems.find(item => item.id === itemId);
-    return cartItem ? cartItem.quantity : 0;
-  };
 
   // Calculate total number of items in the cart
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const handleConfirmOrder = () => {
-    addOrder(cartItems);
-    clearCart();
-    navigation.navigate('Orders'); // Assuming 'Orders' is the route name for the order history screen
+    confirmOrder();
+    navigation.navigate('Orders');
   };
 
   return (
@@ -48,19 +40,21 @@ const CheckoutPage = () => {
           renderItem={({ item }) => (
             <View key={item.id} style={styles.orderItem}>
               <Image source={{ uri: item.image }} style={styles.orderItemImage} />
-              <View style={styles.itemDetails}>
+              <View style={styles.orderItemDetails}>
                 <Text style={styles.orderItemText}>{item.name}</Text>
                 <Text style={styles.orderItemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
               </View>
-              <Text style={styles.itemQuantity}>Items: {findCartItemQuantity(item.id)}</Text>
+              <Text style={styles.itemQuantity}>Quantity: {item.quantity}</Text>
             </View>
           )}
         />
         <View style={styles.totalSection}>
-          <Text style={styles.totalPrice}>Total Price: ${getTotalPrice().toFixed(2)}</Text>
-          <Text style={styles.totalItems}>Total Items: {totalItems}</Text>
-        </View>
+
+        <Text style={styles.totalPrice}>Total Price: ${cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}</Text>
+        <Text style={styles.totalItems}>Total Items: {totalItems}</Text>
       </View>
+      </View>
+      
       <Button title="Confirm Order" onPress={handleConfirmOrder} />
     </View>
   );
@@ -90,7 +84,6 @@ const styles = StyleSheet.create({
   orderItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Align items to the right
     marginBottom: 10,
   },
   orderItemImage: {
@@ -99,35 +92,37 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 8,
   },
-  itemDetails: {
+  orderItemDetails: {
     flex: 1,
   },
   orderItemText: {
     fontSize: 16,
-    padding: 2,
+    fontWeight: 'bold',
   },
   orderItemPrice: {
     fontSize: 14,
     color: '#888',
-    padding: 2,
   },
   itemQuantity: {
     fontSize: 14,
     color: '#888',
-    marginLeft: 10,
   },
   totalSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 10, 
   },
+
   totalPrice: {
     fontSize: 18,
     fontWeight: 'bold',
+    // marginTop: 10,
   },
   totalItems: {
     fontSize: 16,
     fontWeight: 'bold',
   },
+
 });
 
 export default CheckoutPage;

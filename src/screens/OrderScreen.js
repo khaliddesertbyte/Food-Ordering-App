@@ -1,27 +1,51 @@
-import React, { useContext } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, StyleSheet, Button, FlatList, Image } from 'react-native';
 import { OrderContext } from '../contexts/OrderContext';
 
 const OrderScreen = () => {
-  const { orders } = useContext(OrderContext);
+  const { orders, cancelOrder } = useContext(OrderContext);
+  const [filter, setFilter] = useState('All');
+
+  const filterOrders = (status) => {
+    setFilter(status);
+  };
+
+  const filteredOrders = filter === 'All' ? orders : orders.filter(order => order.status === filter);
+
+  const renderOrderItem = ({ item }) => (
+    <View style={styles.orderContainer}>
+      <Text style={styles.orderDate}>Date: {new Date(item.date).toLocaleString()}</Text>
+      <Text style={styles.orderStatus}>Status: {item.status}</Text>
+      {item.items.map(orderItem => (
+        <View key={orderItem.id} style={styles.itemContainer}>
+          <Image source={{ uri: orderItem.image }} style={styles.itemImage} />
+          <View style={styles.itemDetails}>
+            <Text style={styles.itemName}>{orderItem.name}</Text>
+            <Text style={styles.itemPrice}>${orderItem.price.toFixed(2)}</Text>
+            <Text style={styles.itemQuantity}>Quantity: {orderItem.quantity}</Text>
+          </View>
+        </View>
+      ))}
+      <View style={styles.orderActions}>
+        {item.status === 'Pending' && <Button title="Cancel Order" onPress={() => cancelOrder(item.id)} />}
+      </View>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Ordered Items</Text>
-      {orders.map((order) => (
-        <View key={order.id}>
-          <Text style={styles.orderTitle}>Order #{order.id}</Text>
-          {order.items.map((item, index) => (
-            <View key={index} style={styles.itemContainer}>
-              <Image source={{ uri: item.image }} style={styles.itemImage} />
-              <View style={styles.itemDetails}>
-                <Text style={styles.itemName}>{item.name}</Text>
-                <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
-      ))}
+      <Text style={styles.title}>Orders</Text>
+      <View style={styles.filterContainer}>
+        <Button title="All" onPress={() => filterOrders('All')} />
+        <Button title="Pending" onPress={() => filterOrders('Pending')} />
+        <Button title="Completed" onPress={() => filterOrders('Completed')} />
+        <Button title="Canceled" onPress={() => filterOrders('Canceled')} />
+      </View>
+      <FlatList
+        data={filteredOrders}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderOrderItem}
+      />
     </View>
   );
 };
@@ -29,30 +53,46 @@ const OrderScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
     backgroundColor: '#fff',
-    paddingHorizontal: 10,
-    paddingTop: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  orderTitle: {
-    fontSize: 18,
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  orderContainer: {
+    marginBottom: 20,
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    backgroundColor: '#f9f9f9',
+  },
+  orderDate: {
+    fontSize: 14,
     fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  orderStatus: {
+    fontSize: 14,
+    color: '#888',
     marginBottom: 10,
   },
   itemContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 10,
   },
   itemImage: {
     width: 50,
     height: 50,
-    borderRadius: 25,
     marginRight: 10,
+    borderRadius: 8,
   },
   itemDetails: {
     flex: 1,
@@ -64,6 +104,15 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontSize: 14,
     color: '#888',
+  },
+  itemQuantity: {
+    fontSize: 14,
+    color: '#888',
+  },
+  orderActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
   },
 });
 

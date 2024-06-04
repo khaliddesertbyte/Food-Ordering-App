@@ -1,20 +1,44 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { AuthContext } from '../contexts/AuthContext';
+import { auth } from '../../firebase';
+import { useNavigation } from '@react-navigation/native';
 
-const SignupScreen = ({ navigation }) => {
+const SignupScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [address, setAddress] = useState('');
+  const [location, setLocation] = useState('');
+  const { signup } = useContext(AuthContext);
+  const navigation = useNavigation();
 
-  const handleSignup = () => {
-    // Handle signup logic here
-    // If successful, navigate to the main app
-    navigation.navigate('Main');
+  const handleSignup = async () => {
+    try {
+      // Perform signup with email and password
+      await signup(email, password);
+
+      // Additional information can be saved to a user profile or a separate database
+      // For simplicity, this example only logs the user's information
+      console.log('Signup successful with the following details:');
+      console.log('Name:', name);
+      console.log('Email:', email);
+      console.log('Phone Number:', phoneNumber);
+      console.log('Address:', address);
+      console.log('Location:', location);
+
+      // Navigate to the main screen after successful signup
+      navigation.navigate('Login'); // Replace 'Main' with the name of your main screen
+    } catch (error) {
+      console.error('Error signing up:', error);
+      // Handle signup error here, e.g., display error message to the user
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+      <Text style={styles.title}>Signup</Text>
       <TextInput
         style={styles.input}
         placeholder="Name"
@@ -26,7 +50,6 @@ const SignupScreen = ({ navigation }) => {
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
-        keyboardType="email-address"
       />
       <TextInput
         style={styles.input}
@@ -35,9 +58,25 @@ const SignupScreen = ({ navigation }) => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <TouchableOpacity style={styles.button} onPress={handleSignup}>
-        <Text style={styles.buttonText}>Sign Up</Text>
-      </TouchableOpacity>
+      <TextInput
+        style={styles.input}
+        placeholder="Phone Number"
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Address"
+        value={address}
+        onChangeText={setAddress}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Location"
+        value={location}
+        onChangeText={setLocation}
+      />
+      <Button title="Signup" onPress={handleSignup} />
     </View>
   );
 };
@@ -46,31 +85,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
+    alignItems: 'center',
+    padding: 16,
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
-    textAlign: 'center',
   },
   input: {
-    height: 40,
-    borderColor: '#ccc',
+    width: '100%',
+    padding: 10,
     borderWidth: 1,
-    marginBottom: 20,
-    paddingHorizontal: 10,
+    borderColor: '#ccc',
+    marginBottom: 10,
     borderRadius: 5,
-  },
-  button: {
-    backgroundColor: '#4CAF50',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
   },
 });
 

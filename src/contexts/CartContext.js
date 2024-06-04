@@ -1,10 +1,11 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
+import { OrderContext } from './OrderContext';
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-  const [orders, setOrders] = useState([]);
+  const { addOrder } = useContext(OrderContext); // Use addOrder from OrderContext
 
   const addToCart = (item) => {
     setCartItems((prevItems) => {
@@ -37,24 +38,18 @@ export const CartProvider = ({ children }) => {
     setCartItems([]);
   };
 
-  const addOrder = (orderItems) => {
-    setOrders((prevOrders) => [
-      ...prevOrders,
-      {
-        // id: generateOrderId(), // Assuming you have a function to generate a unique order id
-        items: orderItems.map(item => ({
-          id: item.id,
-          image: item.image,
-          name: item.name,
-          price: item.price,
-        })),
-      }
-    ]);
-    clearCart();
+  const confirmOrder = () => {
+    if (cartItems.length > 0) {
+      addOrder(cartItems); // Call addOrder from OrderContext
+      clearCart();
+    }
+  };
+  const removeItemFromCart = (itemId) => {
+    setCartItems((prevItems) => prevItems.filter(item => item.id !== itemId));
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, updateCartQuantity, getTotalPrice, addOrder, clearCart, orders }}>
+    <CartContext.Provider value={{ cartItems, addToCart, updateCartQuantity, getTotalPrice, confirmOrder,removeItemFromCart }}>
       {children}
     </CartContext.Provider>
   );
