@@ -14,25 +14,38 @@ const SignupScreen = () => {
   const { signup } = useContext(AuthContext);
   const navigation = useNavigation();
 
+  // const handleSignup = async () => {
+  //   try {
+  //     // Perform signup with email and password
+  //     await signup(email, password);
+
+  //     // Additional information can be saved to a user profile or a separate database
+  //     // For simplicity, this example only logs the user's information
+  //     console.log('Signup successful with the following details:');
+  //     console.log('Name:', name);
+  //     console.log('Email:', email);
+  //     console.log('Phone Number:', phoneNumber);
+  //     console.log('Address:', address);
+  //     console.log('Location:', location);
+
+  //     // Navigate to the main screen after successful signup
+  //     navigation.navigate('Login'); // Replace 'Main' with the name of your main screen
+  //   } catch (error) {
+  //     console.error('Error signing up:', error);
+  //     // Handle signup error here, e.g., display error message to the user
+  //   }
+  // };
   const handleSignup = async () => {
+    console.log("hiii")
     try {
-      // Perform signup with email and password
-      await signup(email, password);
-
-      // Additional information can be saved to a user profile or a separate database
-      // For simplicity, this example only logs the user's information
-      console.log('Signup successful with the following details:');
-      console.log('Name:', name);
-      console.log('Email:', email);
-      console.log('Phone Number:', phoneNumber);
-      console.log('Address:', address);
-      console.log('Location:', location);
-
-      // Navigate to the main screen after successful signup
-      navigation.navigate('Login'); // Replace 'Main' with the name of your main screen
+      await signup(email, password, {
+        name,
+        phoneNumber,
+        address,
+        location, // And other user details
+      });
     } catch (error) {
-      console.error('Error signing up:', error);
-      // Handle signup error here, e.g., display error message to the user
+      // Handle errors (existing in your code)
     }
   };
 

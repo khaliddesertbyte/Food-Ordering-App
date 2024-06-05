@@ -1,7 +1,8 @@
 import React, { createContext, useState, useEffect,useRef } from 'react';
-import { auth } from '../../firebase';
+import { auth,firestore } from '../../firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, googleProvider } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
+import { doc, setDoc } from 'firebase/firestore'; // For storing user data
 
 export const AuthContext = createContext();
 
@@ -52,13 +53,36 @@ export const AuthProvider = ({ children }) => {
   };
   
 
-  const signup = async (email, password) => {
+  // const signup = async (email, password) => {
+  //   try {
+  //     await createUserWithEmailAndPassword(auth, email, password);
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // };
+  const signup = async (email, password, additionalData) => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-    } catch (e) {
-      console.error(e);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+  
+      // Save additional data in Firestore
+      const userDocRef = doc(firestore, 'users', user.uid); // Create a document reference
+      await setDoc(userDocRef, additionalData); // Set the document with user data
+  
+      setUser(user);
+      console.log('Signup successful...');
+      navigation.navigate('Login'); // Navigate to login screen after successful signup
+    } catch (error) {
+      if (error.code === 'auth/email-already-in-use') {
+        console.error('Email already in use. Please use a different email.');
+        Alert.alert('Error', 'Email already in use. Please use a different email.');
+      } else {
+        console.error('Error signing up:', error);
+        Alert.alert('Error', 'An error occurred during signup. Please try again.');
+      }
     }
   };
+
 
   const logout = async () => {
     try {
