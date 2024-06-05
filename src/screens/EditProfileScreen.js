@@ -1,23 +1,73 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { AuthContext } from '../contexts/AuthContext';
+import { firestore } from '../../firebase';
+import { doc, updateDoc } from 'firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
 
-const EditProfileScreen = () => {
-  const [name, setName] = useState('John Doe');
-  const [email, setEmail] = useState('johndoe@example.com');
+const EditProfileScreen = ({}) => {
+  const { user, userData, setUserData } = useContext(AuthContext);
 
-  const handleSave = () => {
-    // Handle save logic here
+  const [name, setName] = useState(userData?.name || '');
+  const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || '');
+  const [address, setAddress] = useState(userData?.address || '');
+  const [location, setLocation] = useState(userData?.location || '');
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (userData) {
+      setName(userData.name || '');
+      setPhoneNumber(userData.phoneNumber || '');
+      setAddress(userData.address || '');
+      setLocation(userData.location || '');
+    }
+  }, [userData]);
+
+  const handleSave = async () => {
+    try {
+      const userDocRef = doc(firestore, 'users', user.uid);
+      await updateDoc(userDocRef, {
+        name,
+        phoneNumber,
+        address,
+        location,
+      });
+      
+      setUserData?.({ name, phoneNumber, address, location })
+      navigation.navigate('Profile');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Name</Text>
-      <TextInput style={styles.input} value={name} onChangeText={setName} />
-      <Text style={styles.label}>Email</Text>
-      <TextInput style={styles.input} value={email} onChangeText={setEmail} keyboardType="email-address" />
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Save</Text>
-      </TouchableOpacity>
+      <Text style={styles.title}>Edit Profile</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Name"
+        value={name}
+        onChangeText={setName}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Phone Number"
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Address"
+        value={address}
+        onChangeText={setAddress}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Location"
+        value={location}
+        onChangeText={setLocation}
+      />
+      <Button title="Save" onPress={handleSave} />
     </View>
   );
 };
@@ -25,29 +75,20 @@ const EditProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     padding: 20,
+    backgroundColor: '#fff',
   },
-  label: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
+  title: {
+    fontSize: 24,
     marginBottom: 20,
   },
-  saveButton: {
-    backgroundColor: '#4CAF50',
-    padding: 15,
+  input: {
+    width: '100%',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    marginBottom: 10,
     borderRadius: 5,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: '#fff',
-    fontSize: 16,
   },
 });
 

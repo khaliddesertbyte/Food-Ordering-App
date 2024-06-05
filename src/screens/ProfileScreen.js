@@ -1,9 +1,25 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { AuthContext } from '../contexts/AuthContext';
-
+import {firestore } from '../../firebase';
+import {doc,onSnapshot} from 'firebase/firestore'
 const ProfileScreen = ({ navigation }) => {
-  const { user, logout } = useContext(AuthContext);
+  const { user,logout,userData,setUserData } = useContext(AuthContext);
+  const [profileData, setProfileData] = useState(userData);
+
+  useEffect(() => {
+    if (user) {
+      const userDocRef = doc(firestore, 'users', user.uid);
+      const unsubscribe = onSnapshot(userDocRef, (doc) => {
+        if (doc.exists()) {
+          setProfileData(doc.data());
+          setUserData?.(doc.data());
+        }
+      });
+
+      return () => unsubscribe();
+    }
+  }, [user, setUserData]);
 
   const handleEditProfile = () => {
     navigation.navigate('EditProfile');
@@ -19,9 +35,18 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.userInfo}>
-        <Text style={styles.userName}>{user.displayName}</Text>
-        <Text style={styles.userEmail}>{user.email}</Text>
+     <View style={styles.userInfo}>
+        {userData ? (
+          <>
+            <Text style={styles.userName}>{profileData.name}</Text>
+            <Text style={styles.userEmail}>{user.email}</Text>
+            <Text style={styles.userPhone}>{profileData.phoneNumber}</Text>
+            <Text style={styles.userAddress}>{profileData.address}</Text>
+            <Text style={styles.userLocation}>{profileData.location}</Text>
+          </>
+        ) : (
+          <Text>Loading...</Text>
+        )}
       </View>
       <View style={styles.actions}>
         <TouchableOpacity style={styles.actionButton} onPress={handleEditProfile}>
@@ -53,6 +78,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   userEmail: {
+    fontSize: 16,
+    color: '#666',
+  },
+  userPhone: {
+    fontSize: 16,
+    color: '#666',
+  },
+  userAddress: {
+    fontSize: 16,
+    color: '#666',
+  },
+  userLocation: {
     fontSize: 16,
     color: '#666',
   },

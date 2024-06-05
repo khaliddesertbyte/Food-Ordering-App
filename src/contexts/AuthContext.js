@@ -2,12 +2,13 @@ import React, { createContext, useState, useEffect,useRef } from 'react';
 import { auth,firestore } from '../../firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, googleProvider } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
-import { doc, setDoc } from 'firebase/firestore'; // For storing user data
+import { doc, setDoc,getDoc } from 'firebase/firestore'; // For storing user data
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [userData,SetUserData]=useState(null);
   const navigation = useNavigation();
   // const [verificationId, setVerificationId] = useState(null);
   // const [verificationCode, setVerificationCode] = useState('');
@@ -34,8 +35,21 @@ export const AuthProvider = ({ children }) => {
 
   // google sigin ends here
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async(user) => {
+      if(user){
       setUser(user);
+      const userDocRef=doc(firestore,'users',user.uid);
+      const userDoc=await getDoc(userDocRef);
+      if(userDoc.exists()){
+        SetUserData(userDoc.data())
+      }
+    }
+      else{
+        setUser(null);
+        SetUserData(null);
+      }
+
+      
     });
 
     return unsubscribe;
@@ -68,8 +82,8 @@ export const AuthProvider = ({ children }) => {
       // Save additional data in Firestore
       const userDocRef = doc(firestore, 'users', user.uid); // Create a document reference
       await setDoc(userDocRef, additionalData); // Set the document with user data
-  
       setUser(user);
+      SetUserData(additionalData)
       console.log('Signup successful...');
       navigation.navigate('Login'); // Navigate to login screen after successful signup
     } catch (error) {
@@ -87,6 +101,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await signOut(auth);
+      navigation.navigate('Login')
     } catch (e) {
       console.error(e);
     }
@@ -111,7 +126,7 @@ export const AuthProvider = ({ children }) => {
 
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout}}>
+    <AuthContext.Provider value={{ user,userData,SetUserData, login, signup, logout}}>
       {children}
     </AuthContext.Provider>
   );
