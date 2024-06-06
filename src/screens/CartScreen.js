@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { CartContext } from '../contexts/CartContext';
 
 const CartScreen = () => {
-  const { cartItems, updateCartQuantity, getTotalPrice,removeItemFromCart } = useContext(CartContext);
+  const { cartItems, updateCartQuantity, getTotalPrice,removeItemFromCart ,clearCart} = useContext(CartContext);
   const navigation = useNavigation();
 
   const handleIncrement = (item) => {
@@ -53,9 +53,16 @@ const CartScreen = () => {
                 onChangeText={(text) => {/* Handle comment change */}}
               />
             </View>
+          
           </View>
+      
         )}
       />
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.clearCartButton} onPress={clearCart}>
+          <Text style={styles.clearCartButtonText}>Clear Cart</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.totalContainer}>
         <Text style={styles.totalText}>Total: ${getTotalPrice().toFixed(2)}</Text>
       </View>
@@ -141,6 +148,20 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 5,
   },
+  buttonContainer: {
+    alignItems: 'flex-end',
+    marginVertical: 10,
+  },
+  clearCartButton: {
+    backgroundColor: '#FF5733',
+    padding: 10,
+    borderRadius: 8,
+  },
+  clearCartButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   totalContainer: {
     padding: 10,
     borderTopWidth: 1,
@@ -151,6 +172,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  
   checkoutButton: {
     backgroundColor: '#4CAF50',
     padding: 10,

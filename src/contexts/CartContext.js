@@ -1,38 +1,93 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { auth, firestore } from '../../firebase';
 import { OrderContext } from './OrderContext';
-import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const { addOrder } = useContext(OrderContext);
+  const [user, setUser] = useState(null);
 
-  const user = auth.currentUser; // Get the current user
-
-  // Function to save cart items to Firestore
-  const saveCartToFirestore = async (items) => {
-    if (user) {
-      const cartDocRef = doc(firestore, 'carts', user.uid);
-      await setDoc(cartDocRef, { items });
-    }
-  };
-
-  // Function to fetch cart items from Firestore
-  const fetchCartFromFirestore = async () => {
-    if (user) {
-      const cartDocRef = doc(firestore, 'carts', user.uid);
-      const cartDoc = await getDoc(cartDocRef);
-      if (cartDoc.exists()) {
-        setCartItems(cartDoc.data().items || []);
-      }
-    }
-  };
-
+  // Listen for auth state changes
   useEffect(() => {
-    fetchCartFromFirestore();
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        console.log('User signed in:', authUser);
+        setUser(authUser);
+      } else {
+        console.log('No user signed in');
+        setUser(null);
+        setCartItems([]);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Fetch cart items from Firestore when user state changes
+  useEffect(() => {
+    if (user) {
+      fetchCartFromFirestore(user);
+    }
   }, [user]);
+
+  // // Function to save cart items to Firestore
+  // const saveCartToFirestore = async (items) => {
+  //   if (user) {
+  //     try {
+  //       const cartDocRef = doc(firestore, 'carts', user.uid);
+  //       await setDoc(cartDocRef, { items });
+  //       console.log('Cart saved to Firestore:', items);
+  //     } catch (error) {
+  //       console.error('Error saving cart to Firestore:', error);
+  //     }
+  //   }
+  // };
+
+  // // Function to fetch cart items from Firestore
+  // const fetchCartFromFirestore = async (currentUser) => {
+  //   if (currentUser) {
+  //     try {
+  //       const cartDocRef = doc(firestore, 'carts', currentUser.uid);
+  //       const cartDoc = await getDoc(cartDocRef);
+  //       if (cartDoc.exists()) {
+  //         setCartItems(cartDoc.data().items || []);
+  //         console.log('Cart fetched from Firestore:', cartDoc.data().items);
+  //       } else {
+  //         console.log('No cart found in Firestore');
+  //         setCartItems([]);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching cart from Firestore:', error);
+  //     }
+  //   }
+  // };
+  // Function to save cart items to Firestore
+// Function to save cart items to Firestore
+ // Function to save cart items to Firestore
+ const saveCartToFirestore = async (items) => {
+  if (user) {
+    const cartDocRef = doc(firestore, 'carts', user.uid);
+    const userDocRef = doc(firestore, 'users', user.uid);
+    const userDoc = await getDoc(userDocRef);
+    const userName = userDoc.data().name; // Fetch the username from the user's profile
+    await setDoc(cartDocRef, { items, username: userName }); // Include username in the cart data
+  }
+};
+
+// Function to fetch cart items from Firestore
+const fetchCartFromFirestore = async () => {
+  if (user) {
+    const cartDocRef = doc(firestore, 'carts', user.uid);
+    const cartDoc = await getDoc(cartDocRef);
+    if (cartDoc.exists()) {
+      setCartItems(cartDoc.data().items || []);
+    }
+  }
+};
+
 
   const addToCart = (item) => {
     setCartItems((prevItems) => {
@@ -87,7 +142,7 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, updateCartQuantity, getTotalPrice, confirmOrder, removeItemFromCart }}>
+    <CartContext.Provider value={{ cartItems, addToCart, updateCartQuantity, getTotalPrice, confirmOrder, removeItemFromCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );

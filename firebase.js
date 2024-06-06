@@ -2,7 +2,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword,GoogleAuthProvider,signInWithPhoneNumber,PhoneAuthProvider,signInWithCredential } from 'firebase/auth';
 // import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore,collection } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
