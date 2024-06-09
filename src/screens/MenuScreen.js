@@ -1,35 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, FlatList, TextInput } from 'react-native';
+import { firestore } from '../../firebase'; // Adjust the import path as needed
+import { collection, onSnapshot } from 'firebase/firestore';
 import MenuItem from '../components/MenuItem';
 
 const MenuScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
-
-  const foodData = [
-    { id: '1', name: 'Margherita Pizza', price: 10.99, image: 'https://www.kimscravings.com/wp-content/uploads/2020/01/Margherita-Pizza-4-768x1152.jpg', category: 'Breakfast' },
-    { id: '2', name: 'Margherita Pizza', price: 10.99, image: 'https://www.kimscravings.com/wp-content/uploads/2020/01/Margherita-Pizza-4-768x1152.jpg', category: 'Breakfast' },
-    { id: '3', name: 'Margherita Pizza', price: 10.99, image: 'https://www.kimscravings.com/wp-content/uploads/2020/01/Margherita-Pizza-4-768x1152.jpg', category: 'Breakfast' },
-    { id: '4', name: 'Cheeseburger', price: 10.99, image: 'https://assets.epicurious.com/photos/5c745a108918ee7ab68daf79/1:1/w_1920,c_limit/Smashburger-recipe-120219.jpg', category: 'Lunch' },
-    { id: '5', name: 'Cheeseburger', price: 10.99, image: 'https://assets.epicurious.com/photos/5c745a108918ee7ab68daf79/1:1/w_1920,c_limit/Smashburger-recipe-120219.jpg', category: 'Lunch' },
-    { id: '6', name: 'Cheeseburger', price: 10.99, image: 'https://assets.epicurious.com/photos/5c745a108918ee7ab68daf79/1:1/w_1920,c_limit/Smashburger-recipe-120219.jpg', category: 'Lunch' },
-    { id: '7', name: 'Grilled Chicken',price: 10.99 , image: 'https://www.cookinwithmima.com/wp-content/uploads/2021/06/Grilled-BBQ-Chicken.jpg', category: 'Dinner'  },
-    { id: '8', name: 'Grilled Chicken',price: 10.99 , image: 'https://www.cookinwithmima.com/wp-content/uploads/2021/06/Grilled-BBQ-Chicken.jpg', category: 'Dinner'  },
-    { id: '9', name: 'Grilled Chicken',price: 10.99 , image: 'https://www.cookinwithmima.com/wp-content/uploads/2021/06/Grilled-BBQ-Chicken.jpg', category: 'Dinner'  },
-    { id: '10', name: 'Sprite',price: 10.99 , image: 'https://www.mawolatraders.com/wp-content/uploads/2021/03/12094892-01.jpg', category: 'Drinks'  },
-    { id: '11', name: 'Sprite',price: 10.99 , image: 'https://www.mawolatraders.com/wp-content/uploads/2021/03/12094892-01.jpg', category: 'Drinks'  },
-    { id: '12', name: 'Sprite',price: 10.99 , image: 'https://www.mawolatraders.com/wp-content/uploads/2021/03/12094892-01.jpg', category: 'Drinks'  },
-    { id: '13', name: 'Chips',price: 10.99 , image: 'https://www.foodandwine.com/thmb/5HkE9Xf4qM4SqXvCuMzkRqU6A0M=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/Here-Are-the-Most-Popular-Snacks-in-America-Per-State-6ada7279c64a46898b6ec09ad083f9f2.jpg', category: 'Snacks'  },
-    { id: '14', name: 'Chips',price: 10.99 , image: 'https://www.foodandwine.com/thmb/5HkE9Xf4qM4SqXvCuMzkRqU6A0M=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/Here-Are-the-Most-Popular-Snacks-in-America-Per-State-6ada7279c64a46898b6ec09ad083f9f2.jpg', category: 'Snacks'  },
-    { id: '15', name: 'Chips',price: 10.99 , image: 'https://www.foodandwine.com/thmb/5HkE9Xf4qM4SqXvCuMzkRqU6A0M=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/Here-Are-the-Most-Popular-Snacks-in-America-Per-State-6ada7279c64a46898b6ec09ad083f9f2.jpg', category: 'Snacks'  },
-];
-
-  const categories = [
+  const [foodData, setFoodData] = useState([]);
+  const [categories, setCategories] = useState([
     { id: '1', name: 'Breakfast' },
     { id: '2', name: 'Lunch' },
     { id: '3', name: 'Dinner' },
     { id: '4', name: 'Drinks' },
     { id: '5', name: 'Snacks' },
-  ];
+  ]);
+
+  useEffect(() => {
+    const menuItemsCollection = collection(firestore, 'menuItems');
+    const unsubscribe = onSnapshot(menuItemsCollection, (snapshot) => {
+      const itemsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setFoodData(itemsList);
+    }, (error) => {
+      console.error('Error fetching menu items:', error);
+    });
+
+    // Clean up the listener on unmount
+    return () => unsubscribe();
+  }, []);
 
   const getMenuItemsByCategory = (category) => {
     return foodData.filter(item => item.category === category);

@@ -33,8 +33,8 @@ const CartScreen = () => {
           <View style={styles.cartItem}>
             <Image source={{ uri: item.image }} style={styles.cartItemImage} />
             <View style={styles.cartItemDetails}>
-              <Text style={styles.cartItemName}>{item.name}</Text>
-              <Text style={styles.cartItemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
+              <Text style={styles.cartItemName}>{item.itemName}</Text>
+              <Text style={styles.cartItemPrice}>QAR {(item.price * item.quantity).toFixed(2)}</Text>
               <View style={styles.cartItemQuantity}>
                 <TouchableOpacity onPress={() => handleDecrement(item)} style={styles.quantityButton}>
                   <Text style={styles.quantityButtonText}>-</Text>
@@ -64,7 +64,7 @@ const CartScreen = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.totalContainer}>
-        <Text style={styles.totalText}>Total: ${getTotalPrice().toFixed(2)}</Text>
+        <Text style={styles.totalText}>Total: QAR {getTotalPrice().toFixed(2)}</Text>
       </View>
       <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
         <Text style={styles.checkoutButtonText}>Checkout</Text>

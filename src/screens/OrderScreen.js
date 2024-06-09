@@ -21,7 +21,7 @@ const OrderScreen = () => {
           <Image source={{ uri: orderItem.image }} style={styles.itemImage} />
           <View style={styles.itemDetails}>
             <Text style={styles.itemName}>{orderItem.name}</Text>
-            <Text style={styles.itemPrice}>${orderItem.price.toFixed(2)}</Text>
+            <Text style={styles.itemPrice}>QAR {orderItem.price*orderItem.quantity}</Text>
             <Text style={styles.itemQuantity}>Quantity: {orderItem.quantity}</Text>
           </View>
         </View>

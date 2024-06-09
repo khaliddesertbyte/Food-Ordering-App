@@ -1,3 +1,4 @@
+// MenuItem.js
 import React, { useContext } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { CartContext } from '../contexts/CartContext';
@@ -8,8 +9,8 @@ const MenuItem = ({ item }) => {
   return (
     <View style={styles.menuItemContainer}>
       <Image source={{ uri: item.image }} style={styles.menuItemImage} />
-      <Text style={styles.menuItemName}>{item.name}</Text>
-      <Text style={styles.menuItemPrice}>${item.price.toFixed(2)}</Text>
+      <Text style={styles.menuItemName}>{item.itemName}</Text>
+      <Text style={styles.menuItemPrice}>${parseFloat(item.price).toFixed(2)}</Text>
       <TouchableOpacity style={styles.addToCartButton} onPress={() => addToCart(item)}>
         <Text style={styles.addToCartText}>Add to Cart</Text>
       </TouchableOpacity>
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
   addToCartButton: {
     backgroundColor: '#4CAF50',
     padding: 5,
-    margin:2,
+    margin: 2,
     borderRadius: 5,
     alignItems: 'center',
   },

@@ -45,17 +45,20 @@ export const OrderProvider = ({ children }) => {
       if (userDocSnap.exists()) {
         const userData = userDocSnap.data();
         const { name } = userData;
+        const {phoneNumber}=userData;
+       
 
         // Construct order data with the fetched username
         const orderData = {
           userId: user.uid,
           username: name,
+          phonenumber:phoneNumber,
           items: orderItems.map(item => ({
             id: item.id,
             image: item.image,
-            name: item.name,
-            price: item.price,
+            name: item.itemName,
             quantity: item.quantity,
+            price: item.price*item.quantity,
           })),
           date: new Date().toISOString(),
           status: 'Pending', // Default status for a new order

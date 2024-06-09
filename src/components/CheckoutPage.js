@@ -41,7 +41,7 @@ const CheckoutPage = () => {
             <View key={item.id} style={styles.orderItem}>
               <Image source={{ uri: item.image }} style={styles.orderItemImage} />
               <View style={styles.orderItemDetails}>
-                <Text style={styles.orderItemText}>{item.name}</Text>
+                <Text style={styles.orderItemText}>{item.itemName}</Text>
                 <Text style={styles.orderItemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
               </View>
               <Text style={styles.itemQuantity}>Quantity: {item.quantity}</Text>
