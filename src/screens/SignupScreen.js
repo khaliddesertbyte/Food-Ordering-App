@@ -40,6 +40,7 @@ const SignupScreen = () => {
     try {
       await signup(email, password, {
         name,
+        email,
         phoneNumber,
         address,
         location, // And other user details
