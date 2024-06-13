@@ -1,14 +1,18 @@
-import React, { useContext, useState, useEffect } from 'react';
+// OrderScreen.js
+import React, { useContext, useState } from 'react';
 import { View, Text, StyleSheet, Button, FlatList, Image } from 'react-native';
 import { OrderContext } from '../contexts/OrderContext';
+import OrderTracking from '../components/OrderTracking';
 
 const OrderScreen = () => {
   const { orders, cancelOrder } = useContext(OrderContext);
   const [filter, setFilter] = useState('All');
+  const [trackingOrderId, setTrackingOrderId] = useState(null);
 
   const filterOrders = (status) => {
     setFilter(status);
   };
+  
 
   const filteredOrders = filter === 'All' ? orders : orders.filter(order => order.status === filter);
 
@@ -21,14 +25,16 @@ const OrderScreen = () => {
           <Image source={{ uri: orderItem.image }} style={styles.itemImage} />
           <View style={styles.itemDetails}>
             <Text style={styles.itemName}>{orderItem.name}</Text>
-            <Text style={styles.itemPrice}>QAR {orderItem.price*orderItem.quantity}</Text>
+            <Text style={styles.itemPrice}>QAR {orderItem.price}</Text>
             <Text style={styles.itemQuantity}>Quantity: {orderItem.quantity}</Text>
           </View>
         </View>
       ))}
       <View style={styles.orderActions}>
-        {item.status === 'Pending' && <Button title="Cancel Order" onPress={() => cancelOrder(item.id)} />}
-      </View>
+      {item.status === 'Pending' && <Button title="Cancel Order" onPress={() => cancelOrder(item.id)} />}
+      {item.status !== 'Canceled' && <Button title="Track Order" onPress={() => setTrackingOrderId(trackingOrderId === item.id ? null : item.id)} />}
+    </View>
+    {trackingOrderId === item.id && <OrderTracking currentStatus={item.status} />}
     </View>
   );
 

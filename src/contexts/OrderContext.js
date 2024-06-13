@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { auth, firestore } from '../../firebase';
-import { doc, setDoc, collection, addDoc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { doc, setDoc, collection, addDoc, getDoc, getDocs, query, where,onSnapshot,updateDoc } from 'firebase/firestore';
 import { AuthContext } from './AuthContext';
 
 export const OrderContext = createContext();
@@ -15,13 +15,24 @@ export const OrderProvider = ({ children }) => {
     try {
       const ordersCollectionRef = collection(firestore, 'orders');
       const q = query(ordersCollectionRef, where("userId", "==", user.uid));
-      const querySnapshot = await getDocs(q);
+      // const querySnapshot = await getDocs(q);
 
+      // const fetchedOrders = querySnapshot.docs.map(doc => ({
+      //   id: doc.id,
+      //   ...doc.data()
+      // }));
+      // setOrders(fetchedOrders);
+      // Set up a listener for real-time updates
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const fetchedOrders = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
       setOrders(fetchedOrders);
+    });
+
+    // Clean up the listener when component unmounts or when the user changes
+    return () => unsubscribe();
     } catch (error) {
       console.error('Error fetching orders from Firestore:', error);
     }
@@ -75,12 +86,19 @@ export const OrderProvider = ({ children }) => {
     }
   };
 
-  const cancelOrder = (orderId) => {
-    setOrders((prevOrders) =>
-      prevOrders.map(order =>
-        order.id === orderId ? { ...order, status: 'Canceled' } : order
-      )
-    );
+   // Function to cancel an order and update its status in Firestore
+   const cancelOrder = async (orderId) => {
+    try {
+      const orderRef = doc(firestore, 'orders', orderId);
+      await updateDoc(orderRef, { status: 'Cancelled' }); // Update status in Firestore
+      setOrders((prevOrders) =>
+        prevOrders.map(order =>
+          order.id === orderId ? { ...order, status: 'Canceled' } : order
+        )
+      );
+    } catch (error) {
+      console.error('Error cancelling order in Firestore:', error);
+    }
   };
 
   useEffect(() => {

@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { AuthContext } from '../contexts/AuthContext';
 import { auth } from '../../firebase';
 import { useNavigation } from '@react-navigation/native';
+import { serverTimestamp } from 'firebase/firestore';
 
 const SignupScreen = () => {
   const [name, setName] = useState('');
@@ -13,6 +14,7 @@ const SignupScreen = () => {
   const [location, setLocation] = useState('');
   const { signup } = useContext(AuthContext);
   const navigation = useNavigation();
+  const createdAt=serverTimestamp()
 
   // const handleSignup = async () => {
   //   try {
@@ -36,14 +38,15 @@ const SignupScreen = () => {
   //   }
   // };
   const handleSignup = async () => {
-    console.log("hiii")
+    // console.log("hiii")
     try {
       await signup(email, password, {
         name,
         email,
         phoneNumber,
         address,
-        location, // And other user details
+        location,
+        createdAt
       });
     } catch (error) {
       // Handle errors (existing in your code)
