@@ -1,13 +1,36 @@
-// OrderTracking.js
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+// src/components/OrderTracking.js
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Image, Animated } from 'react-native';
 
 const OrderTracking = ({ currentStatus }) => {
-  const statuses = ["Pending", "Processing", "Packaging", "Out for Delivery", "Completed", "Cancelled"];
+  const statuses = ["Pending", "Processing", "Packaging", "Out For Delivery", "Completed"];
   const currentIndex = statuses.indexOf(currentStatus);
+
+  const animation = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(animation, {
+      toValue: currentIndex,
+      duration: 1000,
+      useNativeDriver: false,
+    }).start();
+  }, [currentIndex]);
+
+  const positionInterpolation = animation.interpolate({
+    inputRange: [0, statuses.length - 1],
+    outputRange: [0, (statuses.length - 1) * 118],
+  });
 
   return (
     <View style={styles.container}>
+      <Animated.View
+        style={[styles.deliveryPersonContainer, { top: positionInterpolation }]}
+      >
+        <Image
+          source={{ uri: 'https://cdn3d.iconscout.com/3d/premium/thumb/delivery-man-doing-food-delivery-on-scooter-5454216-4553152.png' }}
+          style={styles.deliveryPerson}
+        />
+      </Animated.View>
       {statuses.map((status, index) => (
         <View key={status} style={styles.statusContainer}>
           <View style={[styles.circle, currentIndex >= index ? styles.activeCircle : styles.inactiveCircle]}>
@@ -28,6 +51,21 @@ const OrderTracking = ({ currentStatus }) => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 10,
+    position: 'relative',
+  },
+  deliveryPersonContainer: {
+    position: 'absolute',
+    left: 200,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deliveryPerson: {
+    width: 100,
+    height: 100,
+  
+  
   },
   statusContainer: {
     flexDirection: 'column',

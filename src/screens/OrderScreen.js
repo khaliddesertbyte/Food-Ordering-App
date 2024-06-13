@@ -14,7 +14,17 @@ const OrderScreen = () => {
   };
   
 
-  const filteredOrders = filter === 'All' ? orders : orders.filter(order => order.status === filter);
+  // const filteredOrders = filter === 'All' ? orders : orders.filter(order => order.status === filter);
+  const filteredOrders = orders.filter(order => {
+    if (filter === 'All') {
+      return true; // Show all orders
+    } else if (filter === 'Pending') {
+      // Show orders with status Pending, Processing, or Out For Delivery
+      return ['Pending', 'Processing','Packaging', 'Out For Delivery'].includes(order.status);
+    } else {
+      return order.status === filter; // Show orders based on the selected filter
+    }
+  });
 
   const renderOrderItem = ({ item }) => (
     <View style={styles.orderContainer}>

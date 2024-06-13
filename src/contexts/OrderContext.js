@@ -15,19 +15,13 @@ export const OrderProvider = ({ children }) => {
     try {
       const ordersCollectionRef = collection(firestore, 'orders');
       const q = query(ordersCollectionRef, where("userId", "==", user.uid));
-      // const querySnapshot = await getDocs(q);
-
-      // const fetchedOrders = querySnapshot.docs.map(doc => ({
-      //   id: doc.id,
-      //   ...doc.data()
-      // }));
-      // setOrders(fetchedOrders);
-      // Set up a listener for real-time updates
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const fetchedOrders = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+      fetchedOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+
       setOrders(fetchedOrders);
     });
 
@@ -90,7 +84,7 @@ export const OrderProvider = ({ children }) => {
    const cancelOrder = async (orderId) => {
     try {
       const orderRef = doc(firestore, 'orders', orderId);
-      await updateDoc(orderRef, { status: 'Cancelled' }); // Update status in Firestore
+      await updateDoc(orderRef, { status: 'Canceled' }); // Update status in Firestore
       setOrders((prevOrders) =>
         prevOrders.map(order =>
           order.id === orderId ? { ...order, status: 'Canceled' } : order
