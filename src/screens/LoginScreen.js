@@ -1,8 +1,9 @@
-import React, { useState, useContext, useRef } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useContext, useRef, useEffect } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
 import { AuthContext } from '../contexts/AuthContext';
-import { auth, signInWithPhoneNumber, PhoneAuthProvider, firebaseConfig,signInWithCredential } from '../../firebase';
+import { auth, signInWithPhoneNumber, PhoneAuthProvider, firebaseConfig, signInWithCredential } from '../../firebase';
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
+import { Ionicons } from '@expo/vector-icons';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -13,6 +14,31 @@ const LoginScreen = ({ navigation }) => {
   const [code, setCode] = useState('');
   const [verificationId, setVerificationId] = useState('');
   const recaptchaVerifier = useRef(null);
+  const [foodAnimation] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(foodAnimation, {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.in(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(foodAnimation, {
+          toValue: 0,
+          duration: 1000,
+          easing: Easing.out(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [foodAnimation]);
+
+  const foodScale = foodAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.2],
+  });
 
   const sendVerificationCode = async () => {
     try {
@@ -47,7 +73,10 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Animated.View style={[styles.foodIcon, { transform: [{ scale: foodScale }] }]}>
+        <Ionicons name="fast-food" size={80} color="#FFA500" />
+      </Animated.View>
+      <Text style={styles.title}>Welcome to FoodDelivery</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -61,13 +90,21 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Login" onPress={handleLogin} />
+      <Button
+        title="Login"
+        onPress={handleLogin}
+        color="#FFA500"
+      />
       <Button
         title="Go to Signup"
         onPress={() => navigation.navigate('Signup')}
+        color="#FFA500"
       />
-      <Button title="Sign in with Google" />
-      <View style={styles.container}>
+      <Button
+        title="Sign in with Google"
+        color="#FFA500"
+      />
+      <View style={styles.otpContainer}>
         <FirebaseRecaptchaVerifierModal
           ref={recaptchaVerifier}
           firebaseConfig={firebaseConfig}
@@ -82,7 +119,11 @@ const LoginScreen = ({ navigation }) => {
           style={styles.textInput}
           editable={!isVerifying}
         />
-        <TouchableOpacity style={styles.sendVerification} onPress={sendVerificationCode} disabled={isVerifying}>
+        <TouchableOpacity
+          style={styles.sendVerification}
+          onPress={sendVerificationCode}
+          disabled={isVerifying}
+        >
           <Text style={styles.buttonText}>Send Verification</Text>
         </TouchableOpacity>
         {isVerifying && (
@@ -110,50 +151,67 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: '#F8D6D0',
+  },
+  foodIcon: {
+    marginBottom: 20,
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
+    fontWeight: 'bold',
+    color: '#FFA500',
   },
   input: {
     width: '100%',
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#FFA500',
     marginBottom: 10,
     borderRadius: 5,
+    backgroundColor: '#FFFFFF',
   },
   textInput: {
-    paddingTop: 40,
-    paddingBottom: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
     paddingHorizontal: 20,
-    fontSize: 24,
-    borderBottomColor: "#fff",
-    borderBottomWidth: 2,
+    fontSize: 16,
+    borderColor: '#FFA500',
+    borderWidth: 1,
+    borderRadius: 5,
     marginBottom: 20,
-    color: "#fff"
+    backgroundColor: '#FFFFFF',
+    color: '#000000',
   },
   sendVerification: {
-    padding: 20,
-    backgroundColor: "#3498db",
-    borderRadius: 10
+    padding: 10,
+    backgroundColor: '#FFA500',
+    borderRadius: 5,
+    marginBottom: 10,
   },
   sendCode: {
-    padding: 20,
-    backgroundColor: "#9b59b6",
-    borderRadius: 10,
+    padding: 10,
+    backgroundColor: '#FFA500',
+    borderRadius: 5,
   },
   buttonText: {
-    textAlign: "center",
-    color: "#fff",
-    fontWeight: "bold"
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   otpText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
-    margin: 20
-  }
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFA500',
+    marginBottom: 10,
+  },
+  otpContainer: {
+    marginTop: 20,
+    padding: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    elevation: 5,
+  },
 });
 
 export default LoginScreen;

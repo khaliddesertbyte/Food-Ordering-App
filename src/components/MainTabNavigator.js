@@ -12,6 +12,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { OrderProvider } from '../contexts/OrderContext';
 import OrderScreen from '../screens/OrderScreen';
 import CheckoutPage from './CheckoutPage';
+import ItemDetailScreen from '../screens/ItemDetailScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -30,6 +31,15 @@ const ProfileStack = () => (
     <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} />
   </Stack.Navigator>
 );
+
+const MenuStack=()=>(
+
+  <Stack.Navigator>
+  <Stack.Screen name='Menu' component={MenuScreen}/>
+  <Stack.Screen name='ItemDetailScreen' component={ItemDetailScreen}/>
+
+  </Stack.Navigator>
+)
 
 const MainTabNavigator = () => {
   const { cartItems } = useContext(CartContext);
@@ -64,7 +74,7 @@ const MainTabNavigator = () => {
       }}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Menu" component={MenuScreen} />
+      <Tab.Screen name="Menu" component={MenuStack} />
       <Tab.Screen
         name="Cart"
         component={CartStack}

@@ -2,13 +2,21 @@
 import React, { useContext } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { CartContext } from '../contexts/CartContext';
+import { useNavigation } from '@react-navigation/native';
 
 const MenuItem = ({ item }) => {
   const { addToCart } = useContext(CartContext);
+  const navigation = useNavigation();
+
+  const handleItemClick = (item) => {
+    navigation.navigate('ItemDetailScreen', { item });
+  };
 
   return (
     <View style={styles.menuItemContainer}>
+      <TouchableOpacity onPress={()=>handleItemClick(item)}>
       <Image source={{ uri: item.image }} style={styles.menuItemImage} />
+      </TouchableOpacity>
       <Text style={styles.menuItemName}>{item.itemName}</Text>
       <Text style={styles.menuItemPrice}>${parseFloat(item.price).toFixed(2)}</Text>
       <TouchableOpacity style={styles.addToCartButton} onPress={() => addToCart(item)}>
