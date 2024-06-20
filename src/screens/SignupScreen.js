@@ -1,11 +1,11 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { AuthContext } from '../contexts/AuthContext';
-import { auth } from '../../firebase';
-import { useNavigation } from '@react-navigation/native';
 import { serverTimestamp } from 'firebase/firestore';
+import LottieView from 'lottie-react-native';
+import { Ionicons } from '@expo/vector-icons'; // Import Ionicons from @expo/vector-icons
 
-const SignupScreen = () => {
+const SignupScreen = ({ navigation }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,32 +13,9 @@ const SignupScreen = () => {
   const [address, setAddress] = useState('');
   const [location, setLocation] = useState('');
   const { signup } = useContext(AuthContext);
-  const navigation = useNavigation();
-  const createdAt=serverTimestamp()
+  const createdAt = serverTimestamp();
 
-  // const handleSignup = async () => {
-  //   try {
-  //     // Perform signup with email and password
-  //     await signup(email, password);
-
-  //     // Additional information can be saved to a user profile or a separate database
-  //     // For simplicity, this example only logs the user's information
-  //     console.log('Signup successful with the following details:');
-  //     console.log('Name:', name);
-  //     console.log('Email:', email);
-  //     console.log('Phone Number:', phoneNumber);
-  //     console.log('Address:', address);
-  //     console.log('Location:', location);
-
-  //     // Navigate to the main screen after successful signup
-  //     navigation.navigate('Login'); // Replace 'Main' with the name of your main screen
-  //   } catch (error) {
-  //     console.error('Error signing up:', error);
-  //     // Handle signup error here, e.g., display error message to the user
-  //   }
-  // };
   const handleSignup = async () => {
-    // console.log("hiii")
     try {
       await signup(email, password, {
         name,
@@ -48,52 +25,97 @@ const SignupScreen = () => {
         location,
         createdAt
       });
+      navigation.navigate('Login'); // Navigate to Login after successful signup
     } catch (error) {
-      // Handle errors (existing in your code)
+      console.error('Error signing up:', error);
     }
   };
 
   return (
     <View style={styles.container}>
+      {/* Animation */}
+      <View style={styles.animationContainer}>
+        <LottieView
+          source={require('../../assets/food-delivery.json')} // Replace with your Lottie animation file
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+      </View>
+
       <Text style={styles.title}>Signup</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Phone Number"
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Address"
-        value={address}
-        onChangeText={setAddress}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Location"
-        value={location}
-        onChangeText={setLocation}
-      />
-      <Button title="Signup" onPress={handleSignup} />
+      {/* Name Input */}
+      <View style={styles.inputContainer}>
+        <Ionicons name="person-outline" size={20} color="#FFA500" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+        />
+      </View>
+      
+      {/* Email Input */}
+      <View style={styles.inputContainer}>
+        <Ionicons name="mail-outline" size={20} color="#FFA500" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+        />
+      </View>
+      
+      {/* Password Input */}
+      <View style={styles.inputContainer}>
+        <Ionicons name="lock-closed-outline" size={20} color="#FFA500" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+      </View>
+      
+      {/* Phone Number Input */}
+      <View style={styles.inputContainer}>
+        <Ionicons name="call-outline" size={20} color="#FFA500" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="phone-pad"
+        />
+      </View>
+      
+      {/* Address Input */}
+      <View style={styles.inputContainer}>
+        <Ionicons name="location-outline" size={20} color="#FFA500" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Address"
+          value={address}
+          onChangeText={setAddress}
+        />
+      </View>
+      
+      {/* Location Input */}
+      <View style={styles.inputContainer}>
+        <Ionicons name="location-sharp" size={20} color="#FFA500" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Location"
+          value={location}
+          onChangeText={setLocation}
+        />
+      </View>
+      
+      {/* Signup Button */}
+      <TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
+        <Text style={styles.buttonText}>Signup</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -104,18 +126,58 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: '#ebdfdf',
+  },
+  animationContainer: {
+    width: '100%',
+    height: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  lottie: {
+    width: '100%',
+    height: 200,
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    height: 50,
+    marginBottom: 10,
+    borderColor: '#FFA500',
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+  },
+  icon: {
+    padding: 10,
+    color:"black",
+    fontWeight:"bold"
   },
   input: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    fontSize: 16,
+    color: 'black',
+  },
+  signupButton: {
     width: '100%',
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 10,
-    borderRadius: 5,
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: '#7B3F00',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
   },
 });
 

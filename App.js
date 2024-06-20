@@ -7,6 +7,7 @@ import SignupScreen from './src/screens/SignupScreen';
 import { CartProvider } from './src/contexts/CartContext';
 import { OrderProvider } from './src/contexts/OrderContext';
 import { AuthProvider } from './src/contexts/AuthContext';
+import WelcomeScreen from './src/screens/WelcomeScreen';
 
 const Stack = createStackNavigator();
 
@@ -16,10 +17,11 @@ const App = () => {
       <AuthProvider>
         <OrderProvider>
           <CartProvider>
-            <Stack.Navigator initialRouteName="Login">
-              <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
+            <Stack.Navigator initialRouteName="Welcome" screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="Welcome" component={WelcomeScreen} />
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="Signup" component={SignupScreen} />
+              <Stack.Screen name="Main" component={MainTabNavigator} />
             </Stack.Navigator>
           </CartProvider>
         </OrderProvider>
