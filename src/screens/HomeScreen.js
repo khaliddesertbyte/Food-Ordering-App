@@ -4,6 +4,7 @@ import FoodCarousel from '../components/FoodCarousel';
 import CategorySection from '../components/CategorySection';
 import MenuSection from '../components/MenuSection';
 import {CartContext }from '../contexts/CartContext'
+import SpecialOffersScreen from './SpecialOffersScreen';
 
 const foodData = [
   { id: '1', name: 'Pizza', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Pizza-3007395.jpg/1920px-Pizza-3007395.jpg' },
@@ -47,8 +48,9 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.contentContainer}>
       <Text style={styles.title}>Welcome to the Food Ordering App!</Text>
       <FoodCarousel data={foodData} />
-      <CategorySection categories={categoryData} onSelect={handleSelectCategory} />
-      <MenuSection menuData={menuData} onAddToCart={addToCart} />
+      {/* <CategorySection categories={categoryData} onSelect={handleSelectCategory} /> */}
+      {/* <MenuSection menuData={menuData} onAddToCart={addToCart} /> */}
+      <SpecialOffersScreen/>
      
       </View>
     </ScrollView>
