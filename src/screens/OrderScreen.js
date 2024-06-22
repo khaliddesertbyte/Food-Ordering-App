@@ -50,7 +50,7 @@ const OrderScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Orders</Text>
+      <Text style={styles.title}> Your Orders</Text>
       <View style={styles.filterContainer}>
         <Button title="All" onPress={() => filterOrders('All')} />
         <Button title="Pending" onPress={() => filterOrders('Pending')} />
@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    marginTop:20,
     backgroundColor: '#fff',
   },
   title: {

@@ -40,10 +40,12 @@ const ItemDetailScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    
+    padding: 12,
     backgroundColor: '#fff',
   },
   imageContainer:{
+    marginTop:50,
     width:"100%",
     backgroundColor:"black",
     borderRadius:15,

@@ -18,7 +18,7 @@ const MenuItem = ({ item }) => {
       <Image source={{ uri: item.image }} style={styles.menuItemImage} />
       </TouchableOpacity>
       <Text style={styles.menuItemName}>{item.itemName}</Text>
-      <Text style={styles.menuItemPrice}>${parseFloat(item.price).toFixed(2)}</Text>
+      <Text style={styles.menuItemPrice}>QAR {parseFloat(item.price).toFixed(2)}</Text>
       <TouchableOpacity style={styles.addToCartButton} onPress={() => addToCart(item)}>
         <Text style={styles.addToCartText}>Add to Cart</Text>
       </TouchableOpacity>
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 8,
     backgroundColor: '#fff',
-    padding: 10,
+    padding: 3,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
@@ -40,8 +40,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   menuItemImage: {
-    width: '100%',
-    height: 100,
+    width: 150,
+    height: 150,
     borderRadius: 8,
   },
   menuItemName: {

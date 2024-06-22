@@ -47,12 +47,15 @@ const styles = StyleSheet.create({
     height: 200, // Set a fixed height for the carousel
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop:30
   },
   image: {
     flex: 1,
-    width: Dimensions.get('window').width,
+    width: 333,
+    justifyContent:"space-between",
     borderRadius: 10,
     resizeMode: 'cover',
+    margin:10
   },
 });
 

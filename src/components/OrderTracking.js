@@ -1,4 +1,3 @@
-// src/components/OrderTracking.js
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Image, Animated } from 'react-native';
 
@@ -18,59 +17,73 @@ const OrderTracking = ({ currentStatus }) => {
 
   const positionInterpolation = animation.interpolate({
     inputRange: [0, statuses.length - 1],
-    outputRange: [0, (statuses.length - 1) * 118],
+    outputRange: ['0%', '80%'], // Adjust this to '80%' to account for the last status
   });
 
   return (
     <View style={styles.container}>
       <Animated.View
-        style={[styles.deliveryPersonContainer, { top: positionInterpolation }]}
+        style={[styles.deliveryPersonContainer, { left: positionInterpolation }]}
       >
         <Image
           source={{ uri: 'https://cdn3d.iconscout.com/3d/premium/thumb/delivery-man-doing-food-delivery-on-scooter-5454216-4553152.png' }}
           style={styles.deliveryPerson}
         />
       </Animated.View>
-      {statuses.map((status, index) => (
-        <View key={status} style={styles.statusContainer}>
-          <View style={[styles.circle, currentIndex >= index ? styles.activeCircle : styles.inactiveCircle]}>
-            <Text style={styles.circleText}>{index + 1}</Text>
+      <View style={styles.trackContainer}>
+        {statuses.map((status, index) => (
+          <View key={status} style={styles.statusContainer}>
+            <View style={styles.circleContainer}>
+              <View style={[styles.circle, currentIndex >= index ? styles.activeCircle : styles.inactiveCircle]}>
+                <Text style={styles.circleText}>{index + 1}</Text>
+              </View>
+            </View>
+            <Text style={[styles.statusText, currentIndex >= index ? styles.activeText : styles.inactiveText]}>
+              {status}
+            </Text>
+            {index < statuses.length - 1 && (
+              <View style={[styles.line, currentIndex > index ? styles.activeLine : styles.inactiveLine]} />
+            )}
           </View>
-          <Text style={[styles.statusText, currentIndex >= index ? styles.activeText : styles.inactiveText]}>
-            {status}
-          </Text>
-          {index < statuses.length - 1 && (
-            <View style={[styles.line, currentIndex > index ? styles.activeLine : styles.inactiveLine]} />
-          )}
-        </View>
-      ))}
+        ))}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 10,
+    marginTop: 20,
     position: 'relative',
+  },
+  trackContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginTop: 60,
+    // paddingHorizontal: '10%', // Add padding to align with delivery person
   },
   deliveryPersonContainer: {
     position: 'absolute',
-    left: 200,
-    width: 40,
-    height: 40,
+    top: 0,
+    width: "20%", // Match the width of statusContainer
+    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
   },
   deliveryPerson: {
-    width: 100,
-    height: 100,
-  
-  
+    width: 50,
+    height: 50,
   },
   statusContainer: {
     flexDirection: 'column',
     alignItems: 'center',
-    marginBottom: 20,
+    width: '20%',
+  },
+  circleContainer: {
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   circle: {
     width: 24,
@@ -91,7 +104,8 @@ const styles = StyleSheet.create({
   },
   statusText: {
     marginTop: 8,
-    marginBottom: 8,
+    textAlign: 'center',
+    fontSize: 10,
   },
   activeText: {
     color: 'blue',
@@ -101,9 +115,11 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   line: {
-    width: 2,
-    height: 30,
-    marginTop: 8,
+    position: 'absolute',
+    top: 12,
+    right: '-40%',
+    width: '70%',
+    height: 2,
   },
   activeLine: {
     backgroundColor: 'blue',

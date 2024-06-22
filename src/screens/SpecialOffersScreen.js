@@ -32,7 +32,9 @@ const SpecialOffersScreen = () => {
       <View style={styles.priceContainer}>
         <Text style={styles.actualPrice}>QAR {item.actualPrice}</Text>
         <Text style={styles.discountedPrice}>QAR {item.price}</Text>
+        
       </View>
+      <Text style={styles.description}>{item.offerDescription}</Text>
       <TouchableOpacity style={styles.addToCartButton} onPress={() => addToCart(item)}>
         <Text style={styles.buttonText}>Add to Cart</Text>
       </TouchableOpacity>
@@ -57,20 +59,22 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: '#fff', // Set background color to white
+    marginTop:20
   },
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
+    textAlign:"center"
   },
   listContent: {
     paddingBottom: 20,
   },
   offerContainer: {
     marginBottom: 20,
-    padding: 10,
+    padding: 5,
     borderWidth: 1,
-    borderColor: 'red',
+    borderColor: 'transparent',
     borderRadius: 8,
   },
   imageContainer: {
@@ -102,8 +106,8 @@ const styles = StyleSheet.create({
   },
   priceContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent:"flex-start",
+    alignItems:"center",
     marginTop: 5,
   },
   actualPrice: {
@@ -111,11 +115,19 @@ const styles = StyleSheet.create({
     color: 'black',
     textDecorationLine: 'line-through',
     opacity: 0.6,
+    marginRight:5
   },
   discountedPrice: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#e74c3c',
+  },
+  description: {
+    fontSize: 16,
+    color: '#555',
+    marginBottom: 5,
+    marginTop: 10,
+    textAlign:"justify",
   },
   addToCartButton: {
     backgroundColor: '#3498db',

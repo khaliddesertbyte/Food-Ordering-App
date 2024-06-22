@@ -16,8 +16,19 @@ import ItemDetailScreen from '../screens/ItemDetailScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+
+const HomeStack = () => (
+  <Stack.Navigator screenOptions={{
+    headerShown: false, // Ensure header is shown
+   
+  }} >
+    <Stack.Screen name="Home" component={HomeScreen} />
+    <Stack.Screen name='ItemDetailScreen' component={ItemDetailScreen}/>
+
+  </Stack.Navigator>
+);
 const CartStack = () => (
-  <Stack.Navigator>
+  <Stack.Navigator screenOptions={{ headerShown: false }} >
     <Stack.Screen name="cart" component={CartScreen} />
     <Stack.Screen name="CheckoutPage" component={CheckoutPage} />
 
@@ -25,7 +36,7 @@ const CartStack = () => (
 );
 
 const ProfileStack = () => (
-  <Stack.Navigator>
+  <Stack.Navigator screenOptions={{ headerShown: false }} >
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="EditProfile" component={EditProfileScreen} />
     <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} />
@@ -34,7 +45,7 @@ const ProfileStack = () => (
 
 const MenuStack=()=>(
 
-  <Stack.Navigator>
+  <Stack.Navigator screenOptions={{ headerShown: false }} >
   <Stack.Screen name='Menu' component={MenuScreen}/>
   <Stack.Screen name='ItemDetailScreen' component={ItemDetailScreen}/>
 
@@ -45,7 +56,7 @@ const MainTabNavigator = () => {
   const { cartItems } = useContext(CartContext);
 
   return (
-    <Tab.Navigator
+    <Tab.Navigator 
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
@@ -73,17 +84,18 @@ const MainTabNavigator = () => {
         },
       }}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Menu" component={MenuStack} />
+      <Tab.Screen name="Home" component={HomeStack}  options={{ headerShown: false }}/>
+      <Tab.Screen name="Menu" component={MenuStack} options={{ headerShown: false }}/>
       <Tab.Screen
         name="Cart"
         component={CartStack}
         options={{
           tabBarBadge: cartItems.length > 0 ? cartItems.length : null,
         }}
+      
       />
-      <Tab.Screen name="Orders" component={OrderScreen} /> 
-      <Tab.Screen name="Profile" component={ProfileStack} />
+      <Tab.Screen name="Orders" component={OrderScreen} options={{ headerShown: false }}/> 
+      <Tab.Screen name="Profile" component={ProfileStack} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 };
